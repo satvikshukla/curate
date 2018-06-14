@@ -35,18 +35,23 @@ def read_file():
 		tmp_img = np.expand_dims(tmp_img, axis=0)
 		tmp_img = preprocess_input(tmp_img)
 		x_train.append(tmp_img.flatten())
-		y_train.append(new_data.loc[new_data['new_filename'] == i]['style'].values)
+		a = new_data.loc[new_data['new_filename'] == i]['style'].values
+		y_train.append(a)
+		print(a)
 
 	del raw_data
 	del data
 	del new_data
 
 	x_train_data = pd.DataFrame(x_train, dtype=float)
-	y_train_data = pd.DataFrame(y_train, dtype=object)
+	y_train_data = pd.Series(y_train, dtype='S')
 	x_train_data.to_csv('./../data/x-train.csv', sep=',')
 	y_train_data.to_csv('./../data/y-train.csv', sep=',')
 
-	# x_train_data = x_train_data.values.reshape(-1, 224, 224, 3)
+	print('x type', type(x_train_data))
+	print(y_train_data.shape)
+	print('y type', type(y_train_data))
+	x_train_data = x_train_data.values.reshape(-1, 224, 224, 3)
 	# y_train_data = to_categorical(y_train_data, num_classes=len(set(y_train)))
 
 def main():
