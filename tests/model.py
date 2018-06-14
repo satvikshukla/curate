@@ -8,8 +8,10 @@ from keras.utils.np_utils import to_categorical
 import matplotlib.pyplot as plt
 # import matplotlib.image as mpimg
 
+random_seed = 1
+
 def read_file():
-	base_path = './../../../../data/'
+	base_path = './../../data/'
 	raw_data = pd.read_csv(base_path + 'all_data_info.csv', dtype=object)
 	data = pd.DataFrame(raw_data)
 	images = os.listdir(base_path + 'train_t')
@@ -35,9 +37,8 @@ def read_file():
 		tmp_img = np.expand_dims(tmp_img, axis=0)
 		tmp_img = preprocess_input(tmp_img)
 		x_train.append(tmp_img.flatten())
-		a = new_data.loc[new_data['new_filename'] == i]['style'].values
-		y_train.append(a)
-		print(a)
+		tmp_val = new_data.loc[new_data['new_filename'] == i]['style'].values
+		y_train.append(tmp_val[0])
 
 	del raw_data
 	del data
@@ -52,7 +53,9 @@ def read_file():
 	print(y_train_data.shape)
 	print('y type', type(y_train_data))
 	x_train_data = x_train_data.values.reshape(-1, 224, 224, 3)
-	# y_train_data = to_categorical(y_train_data, num_classes=len(set(y_train)))
+
+	# use hash to have nique integer values correspond to different categories
+	# y_train_data = to_categorical(y_train_data)
 
 def main():
 	read_file()
