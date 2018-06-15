@@ -10,6 +10,7 @@ from keras.models import Model
 from keras.utils import np_utils
 from keras.applications.imagenet_utils import decode_predictions
 from keras.applications.imagenet_utils import preprocess_input
+from keras.models import model_from_json
 from sklearn.utils import shuffle
 from sklearn.model_selection import train_test_split
 
@@ -39,18 +40,17 @@ counter = 0
 for i in images:
 	if not ((new_data.loc[new_data['new_filename'] == i]['style']).empty):
 		tmp_style = new_data.loc[new_data['new_filename'] == i]['style'].values[0]
-		if (tmp_style == 'Baroque') or (tmp_style == 'Impressionism'):
-			tmp_img = load_img(base_path + 'train_t/' + i, target_size=(224, 224))
-			tmp_img = img_to_array(tmp_img)
-			tmp_img = np.expand_dims(tmp_img, axis=0)
-			tmp_img = preprocess_input(tmp_img)
-			x_train.append(tmp_img)
+		tmp_img = load_img(base_path + 'train_t/' + i, target_size=(224, 224))
+		tmp_img = img_to_array(tmp_img)
+		tmp_img = np.expand_dims(tmp_img, axis=0)
+		tmp_img = preprocess_input(tmp_img)
+		x_train.append(tmp_img)
 
-			if tmp_style not in styles:
-				styles[tmp_style] = counter
-				counter = counter + 1
-			
-			y_train.append(styles.get(tmp_style))
+		if tmp_style not in styles:
+			styles[tmp_style] = counter
+			counter = counter + 1
+		
+		y_train.append(styles.get(tmp_style))
 
 del raw_data
 del data
@@ -94,8 +94,20 @@ resnet_model.layers[-1].trainable
 resnet_model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 t = time.time()
-hist = resnet_model.fit(x_t, y_t, batch_size=32, epochs=12, verbose=1, validation_data=(x_v, y_v))
+hist = resnet_model.fit(x_t, y_t, batch_size=32, epochs=3, verbose=1, validation_data=(x_v, y_v))
 print('training time %s' % (t- time.time()))
 (loss, acc) = resnet_model.evaluate(x_v, y_v, batch_size=10, verbose=1)
 
 print('loss={:.4f}, accuracy: {:.4f}%'.format(loss,acc * 100))
+
+text_file = open('results.txt', 'w')
+text_file.write('acc %.4f' % acc)
+text_file.close()
+
+model_json = resnet_model.to_json()
+with open('model_json', 'w') as json_file:
+	json_file.write(model_json)
+
+resnet_model.save_weights('resnet_model.h5')
+
+print('saved')
