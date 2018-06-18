@@ -40,17 +40,19 @@ counter = 0
 for i in images:
 	if not ((new_data.loc[new_data['new_filename'] == i]['style']).empty):
 		tmp_style = new_data.loc[new_data['new_filename'] == i]['style'].values[0]
-		tmp_img = load_img(base_path + 'train_1/' + i, target_size=(224, 224))
-		tmp_img = img_to_array(tmp_img)
-		tmp_img = np.expand_dims(tmp_img, axis=0)
-		tmp_img = preprocess_input(tmp_img)
-		x_train.append(tmp_img)
+		if tmp_style == 'Renaissance' or tmp_style == 'Baroque':
+			print(tmp_style)
+			tmp_img = load_img(base_path + 'train_1/' + i, target_size=(224, 224))
+			tmp_img = img_to_array(tmp_img)
+			tmp_img = np.expand_dims(tmp_img, axis=0)
+			tmp_img = preprocess_input(tmp_img)
+			x_train.append(tmp_img)
 
-		if tmp_style not in styles:
-			styles[tmp_style] = counter
-			counter = counter + 1
-		
-		y_train.append(styles.get(tmp_style))
+			if tmp_style not in styles:
+				styles[tmp_style] = counter
+				counter = counter + 1
+
+			y_train.append(styles.get(tmp_style))
 
 del raw_data
 del data
@@ -68,7 +70,7 @@ y_train_data = np_utils.to_categorical(y_train, num_classes)
 del x_train
 del y_train
 
-# x, y = shuffle(x_train_data, y_train_data, random_state=random_seed)
+x, y = shuffle(x_train_data, y_train_data, random_state=random_seed)
 
 
 x_t, x_v, y_t, y_v = train_test_split(x_train_data, y_train_data, test_size= 0.1, random_state=random_seed)
@@ -94,7 +96,7 @@ resnet_model.layers[-1].trainable
 resnet_model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 t = time.time()
-hist = resnet_model.fit(x_t, y_t, batch_size=32, epochs=3, verbose=1, validation_data=(x_v, y_v))
+hist = resnet_model.fit(x_t, y_t, batch_size=32, epochs=5, verbose=1, validation_data=(x_v, y_v))
 print('training time %s' % (t- time.time()))
 (loss, acc) = resnet_model.evaluate(x_v, y_v, batch_size=10, verbose=1)
 

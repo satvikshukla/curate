@@ -40,17 +40,19 @@ counter = 0
 for i in images:
 	if not ((new_data.loc[new_data['new_filename'] == i]['style']).empty):
 		tmp_style = new_data.loc[new_data['new_filename'] == i]['style'].values[0]
-		tmp_img = load_img(base_path + 'train_1/' + i, target_size=(224, 224))
-		tmp_img = img_to_array(tmp_img)
-		tmp_img = np.expand_dims(tmp_img, axis=0)
-		tmp_img = preprocess_input(tmp_img)
-		x_train.append(tmp_img)
+		if tmp_style == 'Renaissance' or tmp_style == 'Baroque':
+			print(tmp_style)
+			tmp_img = load_img(base_path + 'train_1/' + i, target_size=(224, 224))
+			tmp_img = img_to_array(tmp_img)
+			tmp_img = np.expand_dims(tmp_img, axis=0)
+			tmp_img = preprocess_input(tmp_img)
+			x_train.append(tmp_img)
 
-		if tmp_style not in styles:
-			styles[tmp_style] = counter
-			counter = counter + 1
-		
-		y_train.append(styles.get(tmp_style))
+			if tmp_style not in styles:
+				styles[tmp_style] = counter
+				counter = counter + 1
+
+			y_train.append(styles.get(tmp_style))
 
 del raw_data
 del data
@@ -68,7 +70,7 @@ y_train_data = np_utils.to_categorical(y_train, num_classes)
 del x_train
 del y_train
 
-# x, y = shuffle(x_train_data, y_train_data, random_state=random_seed)
+x, y = shuffle(x_train_data, y_train_data, random_state=random_seed)
 
 
 x_t, x_v, y_t, y_v = train_test_split(x_train_data, y_train_data, test_size= 0.1, random_state=random_seed)
@@ -76,27 +78,19 @@ x_t, x_v, y_t, y_v = train_test_split(x_train_data, y_train_data, test_size= 0.1
 del x_train_data
 del y_train_data
 
-img_input = Input(shape=(224, 224, 3))
+json_file = open('model_json', 'r')
+loaded_model_json = json_file.read()
+json_file.close()
+loaded_model = model_from_json(loaded_model_json)
 
-model = ResNet50(input_tensor=img_input, include_top=True)
-# model.summary()
-last_layer = model.get_layer('avg_pool').output
-x = Flatten(name='flatten')(last_layer)
-out = Dense(num_classes, activation='softmax', name='output_layer')(x)
-resnet_model = Model(inputs=img_input, outputs=out)
-# resnet_model.summary()
+loaded_model.load_weights('resnet_model.h5')
 
-for layer in resnet_model.layers[:-1]:
-	layer.trainable = False
-
-resnet_model.layers[-1].trainable
-
-resnet_model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+loaded_model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 t = time.time()
-hist = resnet_model.fit(x_t, y_t, batch_size=32, epochs=3, verbose=1, validation_data=(x_v, y_v))
+hist = loaded_model.fit(x_t, y_t, batch_size=32, epochs=5, verbose=1, validation_data=(x_v, y_v))
 print('training time %s' % (t- time.time()))
-(loss, acc) = resnet_model.evaluate(x_v, y_v, batch_size=10, verbose=1)
+(loss, acc) = loaded_model.evaluate(x_v, y_v, batch_size=10, verbose=1)
 
 print('loss={:.4f}, accuracy: {:.4f}%'.format(loss,acc * 100))
 
@@ -104,10 +98,10 @@ text_file = open('results.txt', 'w')
 text_file.write('acc %.4f' % acc)
 text_file.close()
 
-model_json = resnet_model.to_json()
+model_json = loaded_model.to_json()
 with open('model_json', 'w') as json_file:
 	json_file.write(model_json)
 
-resnet_model.save_weights('resnet_model.h5')
+loaded_model.save_weights('loaded_model.h5')
 
 print('saved')
