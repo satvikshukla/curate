@@ -12,10 +12,14 @@ from keras.utils import np_utils
 from keras.applications.imagenet_utils import decode_predictions
 from keras.applications.imagenet_utils import preprocess_input
 from keras.models import model_from_json
+from keras import metrics
 from sklearn.utils import shuffle
 from sklearn.model_selection import train_test_split
 
 random_seed = 1
+
+# def acc_top5(y_true, y_pred):
+# 	return metrics.top_k_categorical_accuracy(y_true, y_pred, k=5)
 
 file = open('./../data/movements.txt')
 
@@ -99,6 +103,7 @@ for layer in resnet_model.layers[:-1]:
 
 resnet_model.layers[-1].trainable
 
+# resnet_model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy', metrics.top_k_categorical_accuracy, acc_top5])
 resnet_model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 t = time.time()
