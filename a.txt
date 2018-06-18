@@ -1,20 +1,11 @@
-       h = Action painting
+﻿       h = Action painting
 count(h) = 98
 
        h = Neo-Rococo
 count(h) = 97
 
-       h = Socialist Realism
-count(h) = 95
-
        h = Zen
 count(h) = 94
-
-       h = Analytical Realism
-count(h) = 89
-
-       h = Analytical Cubism
-count(h) = 87
 
        h = Verism
 count(h) = 84
@@ -34,9 +25,6 @@ count(h) = 74
        h = Ottoman Period
 count(h) = 72
 
-       h = Mechanistic Cubism
-count(h) = 69
-
        h = Outsider art
 count(h) = 68
 
@@ -49,9 +37,6 @@ count(h) = 58
        h = Romanesque
 count(h) = 55
 
-       h = Hyper-Realism
-count(h) = 49
-
        h = Synthetism
 count(h) = 49
 
@@ -62,9 +47,6 @@ count(h) = 47
 count(h) = 44
 
        h = Modernismo
-count(h) = 43
-
-       h = Poster Art Realism
 count(h) = 43
 
        h = Mosan art
@@ -85,9 +67,6 @@ count(h) = 36
        h = Lettrism
 count(h) = 33
 
-       h = Fantastic Realism
-count(h) = 31
-
        h = Post-Minimalism
 count(h) = 31
 
@@ -106,9 +85,6 @@ count(h) = 25
        h = Street art
 count(h) = 23
 
-       h = Cubo-Expressionism
-count(h) = 22
-
        h = New Casualism
 count(h) = 22
 
@@ -119,9 +95,6 @@ count(h) = 21
 count(h) = 21
 
        h = Costumbrismo
-count(h) = 19
-
-       h = Figurative Expressionism
 count(h) = 19
 
        h = Feminist Art
@@ -144,45 +117,3 @@ count(h) = 12
 
        h = Light and Space
 count(h) = 11
-
-       h = Cartographic Art
-count(h) = 10
-
-       h = Joseon Dynasty
-count(h) = 10
-
-       h = Mail Art
-count(h) = 10
-
-       h = Synchromism
-count(h) = 10
-
-       h = Nas-Taliq
-count(h) = 9
-
-       h = Miserablism
-count(h) = 8
-
-       h = Perceptism 
-count(h) = 6
-
-       h = Rayonism
-count(h) = 6
-
-       h = Spectralism
-count(h) = 5
-
-       h = Kinetic Art
-count(h) = 3
-
-       h = Ilkhanid
-count(h) = 2
-
-       h = Environmental (Land) Art
-count(h) = 1
-
-       h = Renaissance
-count(h) = 1
-
-       h = style
-count(h) = 1
