@@ -102,5 +102,4 @@ venv.bak/
 
 # mypy
 .mypy_cache/
-data/
 tests/resnet50.py
