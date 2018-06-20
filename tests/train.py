@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
-import os
-import time
+from os import system, listdir
+from time import time
 from sys import exit
 from keras import metrics
 from keras.models import Model, model_from_json, load_model
@@ -27,7 +27,7 @@ def get_data(movements_ls):
 	base_path = './../../data/'
 	raw_data = pd.read_csv(base_path + 'all_data_info.csv', dtype=object)
 	data = pd.DataFrame(raw_data)
-	images = os.listdir(base_path + 'train_1')
+	images = listdir(base_path + 'train_2')
 
 	# until future
 	# relevant_col = ['artist', 'date', 'style', 'new_filename']
@@ -49,7 +49,7 @@ def get_data(movements_ls):
 		if not ((new_data.loc[new_data['new_filename'] == i]['style']).empty):
 			tmp_style = new_data.loc[new_data['new_filename'] == i]['style'].values[0]
 			if tmp_style in movements_ls:
-				tmp_img = load_img(base_path + 'train_1/' + i, target_size=(224, 224))
+				tmp_img = load_img(base_path + 'train_2/' + i, target_size=(224, 224))
 				tmp_img = img_to_array(tmp_img)
 				tmp_img = np.expand_dims(tmp_img, axis=0)
 				tmp_img = preprocess_input(tmp_img)
@@ -80,19 +80,24 @@ def get_data(movements_ls):
 	del y_train
 
 	x, y = shuffle(x_train_data, y_train_data, random_state=random_seed)
-
-
-	x_t, x_v, y_t, y_v = train_test_split(x_train_data, y_train_data, test_size= 0.1, random_state=random_seed)
+	x = x / 255
+	x = x - np.mean(x, axis=0)
 
 	del x_train_data
 	del y_train_data
+
+	x_t, x_v, y_t, y_v = train_test_split(x, y, test_size= 0.2, random_state=random_seed)
+
+	del x
+	del y
 
 	return (x_t, x_v, y_t, y_v, num_classes)
 
 def train_model(x_t, x_v, y_t, y_v, num_classes):
 	img_input = Input(shape=(224, 224, 3))
 
-	model = ResNet50(input_tensor=img_input, include_top=True)
+	model = ResNet50(input_tensor=img_input, include_top=True, weights=None, classes=num_classes)
+	# model = ResNet50(input_tensor=img_input, include_top=True)
 	# model.summary()
 	last_layer = model.get_layer('avg_pool').output
 	x = Flatten(name='flatten')(last_layer)
@@ -108,18 +113,19 @@ def train_model(x_t, x_v, y_t, y_v, num_classes):
 	# resnet_model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy', metrics.top_k_categorical_accuracy, acc_top5])
 	resnet_model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-	t = time.time()
-	hist = resnet_model.fit(x_t, y_t, batch_size=32, epochs=30, verbose=1, validation_data=(x_v, y_v))
-	print('training time %s' % (t- time.time()))
+	t = time()
+	# hist = resnet_model.fit(x_t, y_t, batch_size=32, epochs=30, verbose=1, validation_data=(x_v, y_v))
+	hist = resnet_model.fit(x_t, y_t, batch_size=32, epochs=200, verbose=1, validation_data=(x_v, y_v))
+	print('training time %s' % (t- time()))
 	(loss, acc) = resnet_model.evaluate(x_v, y_v, batch_size=10, verbose=1)
 
 	print('loss={:.4f}, accuracy: {:.4f}%'.format(loss,acc * 100))
 
-	text_file = open('./../data/results.txt', 'w')
-	text_file.write('acc %.4f' % acc)
-	text_file.close()
+	# text_file = open('./../data/results.txt', 'w')
+	# text_file.write('acc %.4f' % acc)
+	# text_file.close()
 
-	resnet_model.save('./../data/resnet_model.h5')
+	# resnet_model.save('./../data/resnet_model.h5')
 
 	print('saved')
 
@@ -128,9 +134,9 @@ def load_and_train(x_t, x_v, y_t, y_v):
 
 	resnet_model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-	t = time.time()
+	t = time()
 	hist = resnet_model.fit(x_t, y_t, batch_size=32, epochs=30, verbose=1, validation_data=(x_v, y_v))
-	print('training time %s' % (t- time.time()))
+	print('training time %s' % (t- time()))
 	(loss, acc) = resnet_model.evaluate(x_v, y_v, batch_size=10, verbose=1)
 
 	print('loss={:.4f}, accuracy: {:.4f}%'.format(loss,acc * 100))
@@ -144,7 +150,7 @@ def load_and_train(x_t, x_v, y_t, y_v):
 	print('saved')
 
 def main():
-	os.system('clear')
+	system('clear')
 
 	movements_ls = get_movements()
 	x = int(input('Enter 1 to train new model, 2 to train existing model, 3 to exit \n'))
