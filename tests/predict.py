@@ -1,17 +1,10 @@
 import numpy as np
-import pandas as pd
 from os import system, listdir
 from time import time, sleep
 from sys import exit
-from keras import metrics
-from keras.models import Model, model_from_json, load_model
-from keras.utils import np_utils
-from keras.applications.resnet50 import ResNet50
+from keras.models import load_model
 from keras.preprocessing.image import load_img, img_to_array
-from keras.layers import GlobalAveragePooling2D, Dense, Dropout, Activation, Flatten, Input
-from keras.applications.imagenet_utils import decode_predictions, preprocess_input
-from sklearn.utils import shuffle
-from sklearn.model_selection import train_test_split
+from keras.applications.imagenet_utils import preprocess_input
 
 def get_images():
 	base_path = './../images'
@@ -21,7 +14,7 @@ def get_images():
 	return(images)
 
 def process(image_path):
-	model = load_model('./../data/resnet_model_three_cat.h5')
+	model = load_model('./../data/resnet_model_two_cat.h5')
 	# model.summary()
 	# model = ResNet50(weights='imagenet')
 	# print(type(model), type(model_t))
@@ -51,6 +44,14 @@ def process(image_path):
 
 	# print(decode_predictions(preds, top=1)[0])
 
+def go_on():
+	start_over = input('Enter yes if you want to test more images\n')
+
+	if start_over.lower() == 'yes':
+		main()
+	else:
+		exit()
+
 def main():
 	system('clear')
 
@@ -65,9 +66,11 @@ def main():
 
 	if not (test_img in images):
 		print('Sorry, the image is not present in the database')
+		go_on()
 	else:
 		image_path = test_img
 		process(image_path)
+		go_on()
 
 if __name__ == '__main__':
 	main()

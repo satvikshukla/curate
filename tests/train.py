@@ -3,13 +3,12 @@ import pandas as pd
 from os import system, listdir
 from time import time
 from sys import exit
-from keras import metrics
-from keras.models import Model, model_from_json, load_model
+from keras.models import Model, load_model
 from keras.utils import np_utils
 from keras.applications.resnet50 import ResNet50
 from keras.preprocessing.image import load_img, img_to_array
 from keras.layers import GlobalAveragePooling2D, Dense, Dropout, Activation, Flatten, Input
-from keras.applications.imagenet_utils import decode_predictions, preprocess_input
+from keras.applications.imagenet_utils import preprocess_input
 from sklearn.utils import shuffle
 from sklearn.model_selection import train_test_split
 
@@ -34,16 +33,19 @@ def get_data(movements_ls, flag=True):
 	relevant_col = ['style', 'new_filename']
 
 	new_data = data[relevant_col]
+	
+	del raw_data
+	del data
 
 	# for future change
 	# new_data = new_data.dropna(subset=['artist', 'style', 'date'], how='any')
-	new_data = new_data.dropna(subset=['style', 'new_filename'], how='any')
+	# new_data = new_data.dropna(subset=['style', 'new_filename'], how='any')
 
 	new_data = new_data.loc[new_data['new_filename'].isin(images), ]
 	x_train = []
 	y_train = []
-	counter = 0
 	styles = {}
+	counter = 0
 
 	if not flag:
 		file = open('./../data/dict.txt')
@@ -72,8 +74,6 @@ def get_data(movements_ls, flag=True):
 	file.write(str(styles))
 	file.close()
 
-	del raw_data
-	del data
 	del new_data
 
 	x_train_data = np.array(x_train)
@@ -114,7 +114,6 @@ def train_model(x_t, x_v, y_t, y_v, num_classes):
 	last_layer = model.get_layer('avg_pool').output
 	x = Flatten(name='flatten')(last_layer)
 	out = Dense(num_classes, activation='softmax', name='output_layer')(x)
-	# predictions = Dense(num_classes, activation='softmax')(out)
 	resnet_model = Model(inputs=img_input, outputs=out)
 	# resnet_model.summary()
 
