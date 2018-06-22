@@ -18,24 +18,30 @@ def process(image_path):
 	# model.summary()
 	# model = ResNet50(weights='imagenet')
 	# print(type(model), type(model_t))
-	img = load_img('./../images/' + image_path, target_size=(224, 224))
-	img = img_to_array(img)
-	img = np.expand_dims(img, axis=0)
-	img = preprocess_input(img)
 
-	preds = model.predict(img)
-	styles = {}
+	try:
+		img = load_img('./../images/' + image_path, target_size=(224, 224))
+		img = img_to_array(img)
+		img = np.expand_dims(img, axis=0)
+		img = preprocess_input(img)
 
-	file = open('./../data/dict.txt')
+		preds = model.predict(img)
+		styles = {}
 
-	styles = eval(file.read())
+		file = open('./../data/dict_two.txt')
 
-	index = np.argmax(preds)
+		styles = eval(file.read())
 
-	for key, val in styles.items():
-		if val == index:
-			print(key)
-	
+		index = np.argmax(preds)
+
+		for key, val in styles.items():
+			if val == index:
+				print(key)
+	except:
+		print('\nOh! An unexpected error occured in using input file. Please try different file. ')
+		sleep(1)
+		go_on()
+
 	# print(preds)
 	# print(type(preds))
 	# print(type(preds[0]))
@@ -56,12 +62,12 @@ def main():
 	system('clear')
 
 	print('Hi, welcome to pyArt!')
-	sleep(2)
+	sleep(1)
 	print('\nPlease make sure that the image you want to analyze is in the list given below')
 
 	images = get_images()
 
-	input('\nPress Enter to continue')
+	input('\nPress Enter to continue ')
 	test_img = input('Enter the image name you want to analyze (including the format as shown in the list: ')
 
 	if not (test_img in images):

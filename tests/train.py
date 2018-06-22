@@ -79,8 +79,6 @@ def get_data(movements_ls, flag=True):
 	x_train_data = np.array(x_train)
 	x_train_data = np.rollaxis(x_train_data, 1, 0)
 	x_train_data = x_train_data[0]
-	# x_train_data.to_csv('./../data/x-train.csv', sep=',')
-	# y_train_data.to_csv('./../data/y-train.csv', sep=',')
 
 	num_classes = counter
 	y_train_data = np_utils.to_categorical(y_train, num_classes)
@@ -126,7 +124,7 @@ def train_model(x_t, x_v, y_t, y_v, num_classes):
 	resnet_model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 	t = time()
-	hist = resnet_model.fit(x_t, y_t, batch_size=32, epochs=10, verbose=1, validation_data=(x_v, y_v))
+	hist = resnet_model.fit(x_t, y_t, batch_size=32, epochs=100, verbose=1, validation_data=(x_v, y_v))
 	print('training time %s' % (t- time()))
 	(loss, acc) = resnet_model.evaluate(x_v, y_v, batch_size=10, verbose=1)
 
@@ -136,7 +134,7 @@ def train_model(x_t, x_v, y_t, y_v, num_classes):
 	# text_file.write('acc %.4f' % acc)
 	# text_file.close()
 
-	resnet_model.save('./../data/resnet_model_three_cat.h5')
+	resnet_model.save('./../data/resnet_model_two_cat.h5')
 
 	print('saved')
 
