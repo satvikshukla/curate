@@ -6,7 +6,7 @@ from sys import exit
 from keras.models import Model, load_model
 from keras.utils import np_utils
 from keras.applications.resnet50 import ResNet50
-from keras.preprocessing.image import load_img, img_to_array
+from keras.preprocessing.image import load_img, img_to_array, ImageDataGenerator
 from keras.layers import GlobalAveragePooling2D, Dense, Dropout, Activation, Flatten, Input
 from keras.applications.imagenet_utils import preprocess_input
 from sklearn.utils import shuffle
@@ -37,10 +37,6 @@ def get_data(movements_ls, flag=True):
 	del raw_data
 	del data
 
-	# for future change
-	# new_data = new_data.dropna(subset=['artist', 'style', 'date'], how='any')
-	# new_data = new_data.dropna(subset=['style', 'new_filename'], how='any')
-
 	new_data = new_data.loc[new_data['new_filename'].isin(images), ]
 	x_train = []
 	y_train = []
@@ -70,9 +66,9 @@ def get_data(movements_ls, flag=True):
 
 	print(styles)
 
-	file = open('./../data/dict.txt', 'w')
-	file.write(str(styles))
-	file.close()
+	# file = open('./../data/dict.txt', 'w')
+	# file.write(str(styles))
+	# file.close()
 
 	del new_data
 
@@ -101,7 +97,13 @@ def get_data(movements_ls, flag=True):
 	# del x
 	# del y
 
+	print(type(x_t), type(y_t))
+	print(x_t.shape, y_t.shape)
+
 	return (x_t, x_v, y_t, y_v, num_classes)
+
+# def get_chunk():
+
 
 def train_model(x_t, x_v, y_t, y_v, num_classes):
 	img_input = Input(shape=(224, 224, 3))
@@ -123,9 +125,15 @@ def train_model(x_t, x_v, y_t, y_v, num_classes):
 	# resnet_model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy', metrics.top_k_categorical_accuracy, acc_top5])
 	resnet_model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-	t = time()
-	hist = resnet_model.fit(x_t, y_t, batch_size=32, epochs=100, verbose=1, validation_data=(x_v, y_v))
-	print('training time %s' % (t- time()))
+
+	datagen = ImageDataGenerator(rotation_range=10, width_shift_range=0.1, height_shift_range=0.1, horizontal_flip=True)
+
+	datagen.fit(x_t)
+
+	# resnet_model.fit_generator(datagen.flow(x_t, y_t, batch_size=32), steps_per_epoch=len(x_t), epochs=100)
+	# t = time()
+	# resnet_model.fit(x_t, y_t, batch_size=32, epochs=100, verbose=1, validation_data=(x_v, y_v))
+	# print('training time %s' % (t- time()))
 	(loss, acc) = resnet_model.evaluate(x_v, y_v, batch_size=10, verbose=1)
 
 	print('loss={:.4f}, accuracy: {:.4f}%'.format(loss,acc * 100))
@@ -134,7 +142,7 @@ def train_model(x_t, x_v, y_t, y_v, num_classes):
 	# text_file.write('acc %.4f' % acc)
 	# text_file.close()
 
-	resnet_model.save('./../data/resnet_model_two_cat.h5')
+	# resnet_model.save('./../data/resnet_model_new.h5')
 
 	print('saved')
 
@@ -142,7 +150,7 @@ def load_and_train(x_t, x_v, y_t, y_v):
 	resnet_model = load_model('./../data/resnet_model.h5')
 
 	t = time()
-	hist = resnet_model.fit(x_t, y_t, batch_size=32, epochs=100, verbose=1, validation_data=(x_v, y_v))
+	resnet_model.fit(x_t, y_t, batch_size=32, epochs=100, verbose=1, validation_data=(x_v, y_v))
 	print('training time %s' % (t- time()))
 	(loss, acc) = resnet_model.evaluate(x_v, y_v, batch_size=10, verbose=1)
 
@@ -164,7 +172,7 @@ def main():
 
 	if x == 1:
 		x_t, x_v, y_t, y_v, num_classes = get_data(movements_ls)
-		train_model(x_t, x_v, y_t, y_v, num_classes)
+		# train_model(x_t, x_v, y_t, y_v, num_classes)
 	elif x == 2:
 		x_t, x_v, y_t, y_v, num_classes = get_data(movements_ls, False)
 		load_and_train(x_t, x_v, y_t, y_v)
