@@ -98,22 +98,15 @@ def get_data(movements_ls, flag=True):
 	# del x
 	# del y
 
-	# print(type(x_t), type(y_t))
-	# print(x_t.shape, y_t.shape)
-
 	return (x_t, x_v, y_t, y_v, num_classes)
 
 def get_chunk(x_t, y_t):
 	out = []
 	length = ceil(len(x_t[:,0,0,0]) / 1000)
-	print(x_t.shape, y_t.shape)
+	# print(x_t.shape, y_t.shape)
 
 	for i in range(length):
 		out.append((x_t[i:1000 * (i + 1), :, :, :], y_t[i:1000 * (i + 1), :]))
-		# x.append(x_t[i:1000 * (i + 1), :, :, :])
-		# print(x_t[i:1000 * (i + 1), :, :, :].shape)
-		# y.append(y_t[i:1000 * (i + 1), :])
-		# print(y_t[i:1000 * (i + 1), :].shape)
 
 	return out
 
@@ -141,14 +134,21 @@ def train_model(x_t, x_v, y_t, y_v, num_classes):
 	datagen = ImageDataGenerator(rotation_range=10, width_shift_range=0.1, height_shift_range=0.1, horizontal_flip=True)
 
 	datagen.fit(x_t)
+	i = 0
 
 	# resnet_model.fit_generator(datagen.flow(x_t, y_t, batch_size=32), steps_per_epoch=len(x_t), epochs=100)
 	for e in range(3):
-		print("epoch %d" % e)
+		print('epoch', e)
+		i = i + 1
+		j = 0
 		for X_train, Y_train in get_chunk(x_t, y_t): # these are chunks of ~10k pictures
 			print(X_train.shape, Y_train.shape)
-			for X_batch, Y_batch in datagen.flow(X_train, Y_train, batch_size=32): # these are chunks of 32 samples
-				loss = resnet_model.fit(X_batch, Y_batch, epochs=3, verbose=1, validation_data=(x_v, y_v))
+			j = j + 1
+			k = 1
+			for X_batch, Y_batch in datagen.flow(X_train, Y_train, batch_size=16): # these are chunks of 32 samples
+				print('i =', i,  'j =', j, 'k =', k)
+				k = k + 1
+				loss = resnet_model.fit(X_batch, Y_batch, epochs=2, verbose=1, validation_data=(x_v, y_v))
 
 	# t = time()
 	# resnet_model.fit(x_t, y_t, batch_size=32, epochs=100, verbose=1, validation_data=(x_v, y_v))
