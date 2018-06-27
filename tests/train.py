@@ -27,7 +27,7 @@ def get_data(movements_ls, flag=True):
 	base_path = './../../data/'
 	raw_data = pd.read_csv(base_path + 'all_data_info.csv', dtype=object)
 	data = pd.DataFrame(raw_data)
-	images = listdir(base_path + 'train_1')
+	images = listdir(base_path + 'train')
 
 	# until future
 	# relevant_col = ['artist', 'date', 'style', 'new_filename']
@@ -53,7 +53,7 @@ def get_data(movements_ls, flag=True):
 			tmp_style = new_data.loc[new_data['new_filename'] == i]['style'].values[0]
 			# if tmp_style in movements_ls:
 			if tmp_style == 'Baroque' or tmp_style == 'Impressionism':
-				tmp_img = load_img(base_path + 'train_1/' + i, target_size=(224, 224))
+				tmp_img = load_img(base_path + 'train/' + i, target_size=(224, 224))
 				tmp_img = img_to_array(tmp_img)
 				tmp_img = np.expand_dims(tmp_img, axis=0)
 				tmp_img = preprocess_input(tmp_img)
@@ -134,34 +134,34 @@ def train_model(x_t, x_v, y_t, y_v, num_classes):
 	datagen = ImageDataGenerator(rotation_range=10, width_shift_range=0.1, height_shift_range=0.1, horizontal_flip=True)
 
 	datagen.fit(x_t)
-	i = 0
+	# i = 0
 
-	# resnet_model.fit_generator(datagen.flow(x_t, y_t, batch_size=32), steps_per_epoch=len(x_t), epochs=100)
-	for e in range(3):
-		print('epoch', e)
-		i = i + 1
-		j = 0
-		for X_train, Y_train in get_chunk(x_t, y_t): # these are chunks of ~10k pictures
-			print(X_train.shape, Y_train.shape)
-			j = j + 1
-			k = 1
-			for X_batch, Y_batch in datagen.flow(X_train, Y_train, batch_size=16): # these are chunks of 32 samples
-				print('i =', i,  'j =', j, 'k =', k)
-				k = k + 1
-				loss = resnet_model.fit(X_batch, Y_batch, epochs=2, verbose=1, validation_data=(x_v, y_v))
+	t = time()
+	resnet_model.fit_generator(datagen.flow(x_t, y_t, batch_size=16), steps_per_epoch=10, epochs=100)
+	# for e in range(3):
+	# 	print('epoch', e)
+	# 	i = i + 1
+	# 	j = 0
+	# 	for X_train, Y_train in get_chunk(x_t, y_t): # these are chunks of ~10k pictures
+	# 		print(X_train.shape, Y_train.shape)
+	# 		j = j + 1
+	# 		k = 1
+	# 		for X_batch, Y_batch in datagen.flow(X_train, Y_train, batch_size=1000): # these are chunks of 32 samples
+	# 			print('i =', i,  'j =', j, 'k =', k)
+	# 			k = k + 1
+	# 			loss = resnet_model.fit(X_batch, Y_batch, epochs=2, verbose=1)
 
-	# t = time()
 	# resnet_model.fit(x_t, y_t, batch_size=32, epochs=100, verbose=1, validation_data=(x_v, y_v))
-	# print('training time %s' % (t- time()))
+	print('training time %s' % (t- time()))
 	(loss, acc) = resnet_model.evaluate(x_v, y_v, batch_size=10, verbose=1)
 
 	print('loss={:.4f}, accuracy: {:.4f}%'.format(loss,acc * 100))
 
-	# text_file = open('./../data/results.txt', 'w')
-	# text_file.write('acc %.4f' % acc)
-	# text_file.close()
+	text_file = open('./../data/results_new.txt', 'w')
+	text_file.write('acc %.4f' % acc)
+	text_file.close()
 
-	# resnet_model.save('./../data/resnet_model_new.h5')
+	resnet_model.save('./../data/resnet_model_new.h5')
 
 	print('saved')
 
