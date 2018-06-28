@@ -1,31 +1,26 @@
-Abstract Art
-Academicism
-Art Deco
-Art Informel
+﻿Impressionism
+Realism
+Romanticism
+Expressionism
+Post-Impressionism
 Art Nouveau (Modern)
 Baroque
-Color Field Painting
-Concretism
-Cubism
-Early Renaissance
-Expressionism
-Fauvism
-High Renaissance
-Impressionism
-Ink and wash painting
-Lyrical Abstraction
-Mannerism (Late Renaissance)
-Neo-Romanticism
-Neoclassicism
-Northern Renaissance
-Op Art
-Pointillism
-Pop Art
-Post-Impressionism
-Primitivism
-Realism
-Rococo
-Romanticism
 Surrealism
 Symbolism
+Rococo
+Northern Renaissance
+Naïve Art (Primitivism)
+Abstract Expressionism
+Neoclassicism
+Cubism
 Ukiyo-e
+Early Renaissance
+Mannerism (Late Renaissance)
+High Renaissance
+Art Informel
+Magic Realism
+Abstract Art
+Academicism
+Color Field Painting
+Pop Art
+Fauvism

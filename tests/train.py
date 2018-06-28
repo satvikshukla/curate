@@ -22,12 +22,18 @@ def get_movements():
 
 	return movements_ls
 
-def get_data(movements_ls, flag=True):
+def get_artists():
+	file = open('./../data/artists.txt')
+	artists_ls = [val.strip() for val in file]
+
+	return artists_ls
+
+def get_data_movement(movements_ls, flag=True):
 	random_seed = 1
 	base_path = './../../data/'
 	raw_data = pd.read_csv(base_path + 'all_data_info.csv', dtype=object)
 	data = pd.DataFrame(raw_data)
-	images = listdir(base_path + 'train')
+	images = listdir(base_path + 'train_t')
 
 	# until future
 	# relevant_col = ['artist', 'date', 'style', 'new_filename']
@@ -51,9 +57,9 @@ def get_data(movements_ls, flag=True):
 	for i in images:
 		if not ((new_data.loc[new_data['new_filename'] == i]['style']).empty):
 			tmp_style = new_data.loc[new_data['new_filename'] == i]['style'].values[0]
-			# if tmp_style in movements_ls:
-			if tmp_style == 'Baroque' or tmp_style == 'Impressionism':
-				tmp_img = load_img(base_path + 'train/' + i, target_size=(224, 224))
+			if tmp_style in movements_ls:
+			# if tmp_style == 'Baroque' or tmp_style == 'Impressionism':
+				tmp_img = load_img(base_path + 'train_t/' + i, target_size=(224, 224))
 				tmp_img = img_to_array(tmp_img)
 				tmp_img = np.expand_dims(tmp_img, axis=0)
 				tmp_img = preprocess_input(tmp_img)
@@ -67,9 +73,87 @@ def get_data(movements_ls, flag=True):
 
 	print(styles)
 
-	# file = open('./../data/dict.txt', 'w')
-	# file.write(str(styles))
-	# file.close()
+	file = open('./../data/dict_movements.txt', 'w')
+	file.write(str(styles))
+	file.close()
+
+	del new_data
+
+	x_train_data = np.array(x_train)
+	x_train_data = np.rollaxis(x_train_data, 1, 0)
+	x_train_data = x_train_data[0]
+
+	num_classes = counter
+	y_train_data = np_utils.to_categorical(y_train, num_classes)
+
+	del x_train
+	del y_train
+
+	# x, y = shuffle(x_train_data, y_train_data, random_state=random_seed)
+	# x = x / 255
+	# x = x - np.mean(x, axis=0)
+
+	# del x_train_data
+	# del y_train_data
+
+	x_t, x_v, y_t, y_v = train_test_split(x_train_data, y_train_data, test_size= 0.1, random_state=random_seed)
+
+	del x_train_data
+	del y_train_data
+
+	# del x
+	# del y
+
+	return (x_t, x_v, y_t, y_v, num_classes)
+
+def get_data_artists(artists_ls, flag=True):
+	random_seed = 1
+	base_path = './../../data/'
+	raw_data = pd.read_csv(base_path + 'all_data_info.csv', dtype=object)
+	data = pd.DataFrame(raw_data)
+	images = listdir(base_path + 'train_t')
+
+	# until future
+	# relevant_col = ['artist', 'date', 'style', 'new_filename']
+	relevant_col = ['artist', 'new_filename']
+
+	new_data = data[relevant_col]
+	
+	del raw_data
+	del data
+
+	new_data = new_data.loc[new_data['new_filename'].isin(images), ]
+	x_train = []
+	y_train = []
+	artists = {}
+	counter = 0
+
+	if not flag:
+		file = open('./../data/dict.txt')
+		artists = eval(file.read())
+
+	for i in images:
+		if not ((new_data.loc[new_data['new_filename'] == i]['artist']).empty):
+			tmp_artist = new_data.loc[new_data['new_filename'] == i]['artist'].values[0]
+			if tmp_artist in artists_ls:
+			# if tmp_artist == 'Michelangelo' or tmp_artist == 'Erte':
+				tmp_img = load_img(base_path + 'train_t/' + i, target_size=(224, 224))
+				tmp_img = img_to_array(tmp_img)
+				tmp_img = np.expand_dims(tmp_img, axis=0)
+				tmp_img = preprocess_input(tmp_img)
+				x_train.append(tmp_img)
+
+				if tmp_artist not in artists:
+					artists[tmp_artist] = counter
+					counter = counter + 1
+				
+				y_train.append(artists.get(tmp_artist))
+
+	print(artists)
+
+	file = open('./../data/dict_artists.txt', 'w')
+	file.write(str(artists))
+	file.close()
 
 	del new_data
 
@@ -137,7 +221,7 @@ def train_model(x_t, x_v, y_t, y_v, num_classes):
 	# i = 0
 
 	t = time()
-	resnet_model.fit_generator(datagen.flow(x_t, y_t, batch_size=16), steps_per_epoch=10, epochs=100)
+	resnet_model.fit_generator(datagen.flow(x_t, y_t, batch_size=16), steps_per_epoch=100, epochs=300)
 	# for e in range(3):
 	# 	print('epoch', e)
 	# 	i = i + 1
@@ -157,11 +241,11 @@ def train_model(x_t, x_v, y_t, y_v, num_classes):
 
 	print('loss={:.4f}, accuracy: {:.4f}%'.format(loss,acc * 100))
 
-	text_file = open('./../data/results_new.txt', 'w')
-	text_file.write('acc %.4f' % acc)
-	text_file.close()
+	# text_file = open('./../data/results_new.txt', 'w')
+	# text_file.write('acc %.4f' % acc)
+	# text_file.close()
 
-	resnet_model.save('./../data/resnet_model_new.h5')
+	resnet_model.save('./../data/resnet_model_movements.h5')
 
 	print('saved')
 
@@ -187,16 +271,18 @@ def main():
 	system('clear')
 
 	movements_ls = get_movements()
-	x = int(input('Enter 1 to train new model, 2 to train existing model, 3 to exit \n'))
+	artists_ls = get_artists()
+	x = int(input('Enter 1 to train new model, 2 to train existing model, 3 train artists \n'))
 
 	if x == 1:
-		x_t, x_v, y_t, y_v, num_classes = get_data(movements_ls)
+		x_t, x_v, y_t, y_v, num_classes = get_data_movement(movements_ls)
 		train_model(x_t, x_v, y_t, y_v, num_classes)
 	elif x == 2:
-		x_t, x_v, y_t, y_v, num_classes = get_data(movements_ls, False)
+		x_t, x_v, y_t, y_v, num_classes = get_data_movement(movements_ls, False)
 		load_and_train(x_t, x_v, y_t, y_v)
 	elif x == 3:
-		exit()
+		x_t, x_v, y_t, y_v, num_classes = get_data_artists(artists_ls)
+		train_model(x_t, x_v, y_t, y_v, num_classes)
 	else:
 		main()
 

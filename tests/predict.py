@@ -71,12 +71,27 @@ def get_artist(image_path, art_movement, movements_ls, data):
 
 		preds = model.predict(img)
 		preds = preds.tolist()
+		tmp_ls = []
 		artists = {}
 
 		file = open('./../data/some_dict.txt')
 		artists = eval(file.read())
+
+		for i, val in enumerate(preds):
+			tmp_ls.append((i, val))
+
+		tmp_ls.sort(key=lambda tup: tup[1], reverse=True)
+
+		for i, val_one in tmp_ls:
+			for j, val_two in artists:
+				if i == val_two and flag:
+					print('most probable artist is', j)
+					return 1
+		
+		return 0
 	except:
-		print()
+		print('\nOh! An unexpected error occured in using input file. Please try different file.')
+		return 0
 
 def go_on():
 	start_over = input('\nEnter yes if you want to test more images: ')
