@@ -3,6 +3,8 @@ import pandas as pd
 from os import system, listdir
 from time import time
 from sys import exit
+from wikipedia import summary
+from re import sub
 from keras.models import load_model
 from keras.preprocessing.image import load_img, img_to_array
 from keras.applications.imagenet_utils import preprocess_input
@@ -63,35 +65,37 @@ def get_artist(image_path, art_movement, movements_ls, data):
 
 	model = load_model('./../data/resnet_model_artists_tmp.h5')
 
-	try:
-		img = load_img('./../images/' + image_path, target_size=(224, 224))
-		img = img_to_array(img)
-		img = np.expand_dims(img, axis=0)
-		img = preprocess_input(img)
+	# try:
+	img = load_img('./../images/' + image_path, target_size=(224, 224))
+	img = img_to_array(img)
+	img = np.expand_dims(img, axis=0)
+	img = preprocess_input(img)
 
-		preds = model.predict(img)
-		preds = preds.tolist()
-		tmp_ls = []
-		artists = {}
+	preds = model.predict(img)
+	preds = preds.tolist()
+	tmp_ls = []
+	artists = {}
 
-		file = open('./../data/dict_artists_tmp.txt')
-		artists = eval(file.read())
+	file = open('./../data/dict_artists_tmp.txt')
+	artists = eval(file.read())
 
-		for i, val in enumerate(preds[0]):
-			tmp_ls.append((i, val))
+	for i, val in enumerate(preds[0]):
+		tmp_ls.append((i, val))
 
-		tmp_ls.sort(key=lambda tup: tup[1], reverse=True)
+	tmp_ls.sort(key=lambda tup: tup[1], reverse=True)
 
-		for i, val_one in tmp_ls:
-			for j, val_two in artists.items():
-				if i == val_two:
-					print('most probable artist is', j)
-					return 1
-		
-		return 0
-	except:
-		print('\nOh! An unexpected error occured in using input file. Please try different file.')
-		return 0
+	for i, val_one in tmp_ls:
+		for j, val_two in artists.items():
+			if i == val_two:
+				print('most probable artist is', j)
+				result = sub("[\(\[].*?[\)\]]", "", summary(j)).strip()
+				print(result)
+				return 1
+	
+	return 0
+	# except:
+	# 	print('\nOh! An unexpected error occured in using input file. Please try different file.')
+	# 	return 0
 
 def go_on():
 	start_over = input('\nEnter yes if you want to test more images: ')
