@@ -30,7 +30,7 @@ def get_data():
 	return new_data
 
 def get_art_movement(image_path):
-	model = load_model('./../data/resnet_model.h5')
+	model = load_model('./../data/resnet_model_movements_tmp.h5')
 
 	try:
 		img = load_img('./../images/' + image_path, target_size=(224, 224))
@@ -41,7 +41,7 @@ def get_art_movement(image_path):
 		preds = model.predict(img)
 		styles = {}
 
-		file = open('./../data/dict.txt')
+		file = open('./../data/dict_movements_tmp.txt')
 
 		styles = eval(file.read())
 
@@ -61,7 +61,7 @@ def get_artist(image_path, art_movement, movements_ls, data):
 	possible_artists = new_data['artist'].tolist()
 	possible_artists = list(set(possible_artists))
 
-	model = load_model('./../data/some_model.h5')
+	model = load_model('./../data/resnet_model_artists_tmp.h5')
 
 	try:
 		img = load_img('./../images/' + image_path, target_size=(224, 224))
@@ -74,17 +74,17 @@ def get_artist(image_path, art_movement, movements_ls, data):
 		tmp_ls = []
 		artists = {}
 
-		file = open('./../data/some_dict.txt')
+		file = open('./../data/dict_artists_tmp.txt')
 		artists = eval(file.read())
 
-		for i, val in enumerate(preds):
+		for i, val in enumerate(preds[0]):
 			tmp_ls.append((i, val))
 
 		tmp_ls.sort(key=lambda tup: tup[1], reverse=True)
 
 		for i, val_one in tmp_ls:
-			for j, val_two in artists:
-				if i == val_two and flag:
+			for j, val_two in artists.items():
+				if i == val_two:
 					print('most probable artist is', j)
 					return 1
 		
@@ -124,6 +124,10 @@ def main():
 
 		data = get_data()
 		returned_artist = get_artist(image_path, returned_movement, movements_ls, data)
+
+		if returned_artist == 0:
+			go_on()
+
 		go_on()
 
 if __name__ == '__main__':

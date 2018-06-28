@@ -73,7 +73,7 @@ def get_data_movement(movements_ls, flag=True):
 
 	print(styles)
 
-	file = open('./../data/dict_movements.txt', 'w')
+	file = open('./../data/dict_movements_tmp.txt', 'w')
 	file.write(str(styles))
 	file.close()
 
@@ -151,7 +151,7 @@ def get_data_artists(artists_ls, flag=True):
 
 	print(artists)
 
-	file = open('./../data/dict_artists.txt', 'w')
+	file = open('./../data/dict_artists_tmp.txt', 'w')
 	file.write(str(artists))
 	file.close()
 
@@ -221,7 +221,7 @@ def train_model(x_t, x_v, y_t, y_v, num_classes):
 	# i = 0
 
 	t = time()
-	resnet_model.fit_generator(datagen.flow(x_t, y_t, batch_size=16), steps_per_epoch=100, epochs=300)
+	resnet_model.fit_generator(datagen.flow(x_t, y_t, batch_size=32), steps_per_epoch=5, epochs=10)
 	# for e in range(3):
 	# 	print('epoch', e)
 	# 	i = i + 1
@@ -241,11 +241,11 @@ def train_model(x_t, x_v, y_t, y_v, num_classes):
 
 	print('loss={:.4f}, accuracy: {:.4f}%'.format(loss,acc * 100))
 
-	# text_file = open('./../data/results_new.txt', 'w')
-	# text_file.write('acc %.4f' % acc)
-	# text_file.close()
+	text_file = open('./../data/results_artists_tmp.txt', 'w')
+	text_file.write('acc %.4f' % acc)
+	text_file.close()
 
-	resnet_model.save('./../data/resnet_model_movements.h5')
+	resnet_model.save('./../data/resnet_model_artists_tmp.h5')
 
 	print('saved')
 
@@ -272,7 +272,7 @@ def main():
 
 	movements_ls = get_movements()
 	artists_ls = get_artists()
-	x = int(input('Enter 1 to train new model, 2 to train existing model, 3 train artists \n'))
+	x = int(input('Enter 1 to train new movements, 2 to train existing model, 3 train new artists'))
 
 	if x == 1:
 		x_t, x_v, y_t, y_v, num_classes = get_data_movement(movements_ls)
