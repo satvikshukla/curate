@@ -1,0 +1,1 @@
+{'Amadeo de Souza-Cardoso': 0, 'Andy Warhol': 1, 'Edward Hopper': 2, 'Jean-Leon Gerome': 3, 'Charles Lapicque': 4, 'Xu Beihong': 5, 'Jean Degottex': 6, 'Martin Kippenberger': 7, 'Jusepe de Ribera': 8, 'Lucas Cranach the Elder': 9, 'Paul Jacoulet': 10, 'Jacques Stella': 11, 'Alighiero Boetti': 12, 'Clarence Holbrook Carter': 13}

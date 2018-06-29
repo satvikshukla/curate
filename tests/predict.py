@@ -44,7 +44,6 @@ def get_art_movement(image_path):
 		styles = {}
 
 		file = open('./../data/dict_movements_tmp.txt')
-
 		styles = eval(file.read())
 
 		index = np.argmax(preds)
@@ -59,9 +58,9 @@ def get_art_movement(image_path):
 		return 0
 
 def get_artist(image_path, art_movement, movements_ls, data):
-	new_data = data.loc[data['style'] == art_movement]
-	possible_artists = new_data['artist'].tolist()
-	possible_artists = list(set(possible_artists))
+	# new_data = data.loc[data['style'] == art_movement]
+	# possible_artists = new_data['artist'].tolist()
+	# possible_artists = list(set(possible_artists))
 
 	model = load_model('./../data/resnet_model_artists_tmp.h5')
 
@@ -86,10 +85,11 @@ def get_artist(image_path, art_movement, movements_ls, data):
 
 	for i, val_one in tmp_ls:
 		for j, val_two in artists.items():
+			# if i == val_two and j in possible_artists:
 			if i == val_two:
-				print('most probable artist is', j)
-				# result = sub("[\(\[].*?[\)\]]", "", summary(j)).strip()
-				result = summary(j)
+				print('Most probable artist is', j)
+				result = sub('[\(\[].*?[\)\]]', '', summary(j)).strip()
+				# result = summary(j)
 				print(result)
 				return 1
 	
