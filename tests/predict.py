@@ -88,7 +88,8 @@ def get_artist(image_path, art_movement, movements_ls, data):
 		for j, val_two in artists.items():
 			if i == val_two:
 				print('most probable artist is', j)
-				result = sub("[\(\[].*?[\)\]]", "", summary(j)).strip()
+				# result = sub("[\(\[].*?[\)\]]", "", summary(j)).strip()
+				result = summary(j)
 				print(result)
 				return 1
 	

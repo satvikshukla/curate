@@ -33,7 +33,7 @@ def get_data_movement(movements_ls, flag=True):
 	base_path = './../../data/'
 	raw_data = pd.read_csv(base_path + 'all_data_info.csv', dtype=object)
 	data = pd.DataFrame(raw_data)
-	images = listdir(base_path + 'train_t')
+	images = listdir(base_path + 'train_o')
 
 	# until future
 	# relevant_col = ['artist', 'date', 'style', 'new_filename']
@@ -51,7 +51,7 @@ def get_data_movement(movements_ls, flag=True):
 	counter = 0
 
 	if not flag:
-		file = open('./../data/dict.txt')
+		file = open('./../data/dict_movements_tmp.txt')
 		styles = eval(file.read())
 
 	for i in images:
@@ -59,7 +59,7 @@ def get_data_movement(movements_ls, flag=True):
 			tmp_style = new_data.loc[new_data['new_filename'] == i]['style'].values[0]
 			if tmp_style in movements_ls:
 			# if tmp_style == 'Baroque' or tmp_style == 'Impressionism':
-				tmp_img = load_img(base_path + 'train_t/' + i, target_size=(224, 224))
+				tmp_img = load_img(base_path + 'train_o/' + i, target_size=(224, 224))
 				tmp_img = img_to_array(tmp_img)
 				tmp_img = np.expand_dims(tmp_img, axis=0)
 				tmp_img = preprocess_input(tmp_img)
@@ -73,7 +73,7 @@ def get_data_movement(movements_ls, flag=True):
 
 	print(styles)
 
-	file = open('./../data/dict_movements_tmp.txt', 'w')
+	file = open('./../data/dict_movements_tmp_two.txt', 'w')
 	file.write(str(styles))
 	file.close()
 
@@ -111,7 +111,7 @@ def get_data_artists(artists_ls, flag=True):
 	base_path = './../../data/'
 	raw_data = pd.read_csv(base_path + 'all_data_info.csv', dtype=object)
 	data = pd.DataFrame(raw_data)
-	images = listdir(base_path + 'train_t')
+	images = listdir(base_path + 'train_o')
 
 	# until future
 	# relevant_col = ['artist', 'date', 'style', 'new_filename']
@@ -137,7 +137,7 @@ def get_data_artists(artists_ls, flag=True):
 			tmp_artist = new_data.loc[new_data['new_filename'] == i]['artist'].values[0]
 			if tmp_artist in artists_ls:
 			# if tmp_artist == 'Michelangelo' or tmp_artist == 'Erte':
-				tmp_img = load_img(base_path + 'train_t/' + i, target_size=(224, 224))
+				tmp_img = load_img(base_path + 'train_o/' + i, target_size=(224, 224))
 				tmp_img = img_to_array(tmp_img)
 				tmp_img = np.expand_dims(tmp_img, axis=0)
 				tmp_img = preprocess_input(tmp_img)
@@ -241,29 +241,34 @@ def train_model(x_t, x_v, y_t, y_v, num_classes):
 
 	print('loss={:.4f}, accuracy: {:.4f}%'.format(loss,acc * 100))
 
-	text_file = open('./../data/results_artists_tmp.txt', 'w')
+	text_file = open('./../data/results_movements_tmp.txt', 'w')
 	text_file.write('acc %.4f' % acc)
 	text_file.close()
 
-	resnet_model.save('./../data/resnet_model_artists_tmp.h5')
+	resnet_model.save('./../data/resnet_model_movements_tmp.h5')
 
 	print('saved')
 
 def load_and_train(x_t, x_v, y_t, y_v):
-	resnet_model = load_model('./../data/resnet_model.h5')
+	resnet_model = load_model('./../data/resnet_model_movements_tmp.h5')
+
+	datagen = ImageDataGenerator(rotation_range=10, width_shift_range=0.1, height_shift_range=0.1, horizontal_flip=True)
+
+	datagen.fit(x_t)
+	# i = 0
 
 	t = time()
-	resnet_model.fit(x_t, y_t, batch_size=32, epochs=100, verbose=1, validation_data=(x_v, y_v))
+	resnet_model.fit_generator(datagen.flow(x_t, y_t, batch_size=32), steps_per_epoch=5, epochs=10)
 	print('training time %s' % (t- time()))
 	(loss, acc) = resnet_model.evaluate(x_v, y_v, batch_size=10, verbose=1)
 
 	print('loss={:.4f}, accuracy: {:.4f}%'.format(loss,acc * 100))
 
-	# text_file = open('./../data/results.txt', 'w')
-	# text_file.write('acc %.4f' % acc)
-	# text_file.close()
+	text_file = open('./../data/results_movements_tmp_two.txt', 'w')
+	text_file.write('acc %.4f' % acc)
+	text_file.close()
 
-	# resnet_model.save('./../data/resnet_model.h5')
+	resnet_model.save('./../data/resnet_model_movements_tmp_two.h5')
 
 	print('saved')
 
@@ -272,7 +277,7 @@ def main():
 
 	movements_ls = get_movements()
 	artists_ls = get_artists()
-	x = int(input('Enter 1 to train new movements, 2 to train existing model, 3 train new artists'))
+	x = int(input('Enter 1 to train new movements, 2 to train existing model, 3 train new artists: '))
 
 	if x == 1:
 		x_t, x_v, y_t, y_v, num_classes = get_data_movement(movements_ls)
@@ -283,6 +288,9 @@ def main():
 	elif x == 3:
 		x_t, x_v, y_t, y_v, num_classes = get_data_artists(artists_ls)
 		train_model(x_t, x_v, y_t, y_v, num_classes)
+	elif x == 4:
+		x_t, x_v, y_t, y_v, num_classes = get_data_artists(artists_ls, False)
+		load_and_train(x_t, x_v, y_t, y_v)
 	else:
 		main()
 
