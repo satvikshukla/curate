@@ -32,7 +32,7 @@ def get_data(name, ls, flag=True):
 		relevant_col = ['artist', 'new_filename']
 		match_string = 'artist'
 
-	base_path = './../../data/'
+	base_path = './../data/'
 	raw_data = pd.read_csv(base_path + 'all_data_info.csv', dtype=object)
 	data = pd.DataFrame(raw_data)
 	images = listdir(base_path + 'train_t')

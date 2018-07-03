@@ -17,10 +17,10 @@ pandas
 numpy
 pillow
 tensorflow
-keras
 h5py
 scipy
 pyyaml
+keras
 wikipedia
 ```
 
