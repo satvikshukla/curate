@@ -51,7 +51,7 @@ def get_art_movement(image_path):
 		for key, val in styles.items():
 			if val == index:
 				print(key, 'with precentage prediction of', np.max(preds))
-		
+
 		return key
 	except:
 		print('\nOh! An unexpected error occured in using input file. Please try different file.')
@@ -92,7 +92,7 @@ def get_artist(image_path, art_movement, movements_ls, data):
 					result = summary(j)
 					print(result)
 					return 1
-		
+
 		return 0
 	except:
 		print('\nOh! An unexpected error occured in using input file. Please try different file.')

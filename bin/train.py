@@ -18,7 +18,7 @@ from sklearn.model_selection import train_test_split
 
 def get_list(name):
 	string_to_get = './../data/' + name + '.txt'
-	
+
 	file_to_get = open(string_to_get)
 	ls = [val.strip() for val in file_to_get]
 
@@ -38,7 +38,7 @@ def get_data(name, ls, flag=True):
 	images = listdir(base_path + 'train_t')
 
 	new_data = data[relevant_col]
-	
+
 	del raw_data
 	del data
 
@@ -66,7 +66,7 @@ def get_data(name, ls, flag=True):
 				if tmp_string not in ref_dict:
 					ref_dict[tmp_string] = counter
 					counter = counter + 1
-				
+
 				y_train.append(ref_dict.get(tmp_string))
 
 	print(ref_dict)
@@ -148,7 +148,7 @@ def load_and_train(x_t, x_v, y_t, y_v):
 	datagen.fit(x_t)
 
 	t = time()
-	resnet_model.fit_generator(datagen.flow(x_t, y_t, batch_size=32), steps_per_epoch=5, epochs=10)
+	resnet_model.fit_generator(datagen.flow(x_t, y_t, batch_size=32), steps_per_epoch=100, epochs=100)
 	print('training time %s' % (t- time()))
 	(loss, acc) = resnet_model.evaluate(x_v, y_v, batch_size=10, verbose=1)
 
