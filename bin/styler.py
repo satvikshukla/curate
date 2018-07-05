@@ -8,7 +8,7 @@ from keras.preprocessing.image import load_img
 from utils import preprocess_image, deprocess_image
 from loss import style_reconstruction_loss, content_reconstruction_loss, total_reconstruction_loss
 
-class styler(object):
+class Styler(object):
 
 	def __init__(self, base_img_path, style_img_path, output_img_path,
 				content_weight, style_weight, tv_weight,
@@ -93,28 +93,28 @@ class styler(object):
 			x = np.random.uniform(0, 255, (1, self.height, self.width, 3)) - 128
 
 		for i in range(self.iterations):
-			x, min_val, info = fmin_l_bfgs_b(self.loss, x.flatten(), fprime=self.grads, maxfun=20)
+			x, _, _ = fmin_l_bfgs_b(self.loss, x.flatten(), fprime=self.grads, maxfun=20)
 
 			img = deprocess_image(x.copy(), self.height, self.width)
 			fname = self.output_img_path + 'at_itr_%d.png' % (i + 1)
 			imsave(fname, img)
 
 	def loss(self, x):
+
 		if K.image_dim_ordering() == 'th':
 			x = np.random.uniform(0, 255, (1, 3, self.height, self.width)) - 128
 		else:
 			x = np.random.uniform(0, 255, (1, self.height, self.width, 3)) - 128
-
 		out = self.loss_and_grads([x])
 		loss_val = out[0]
 		return loss_val
 
 	def grads(self, x):
+		
 		if K.image_dim_ordering() == 'th':
 			x = np.random.uniform(0, 255, (1, 3, self.height, self.width)) - 128
 		else:
 			x = np.random.uniform(0, 255, (1, self.height, self.width, 3)) - 128
-
 		out = self.loss_and_grads([x])
 
 		if len(out[1:]) == 1:
@@ -123,3 +123,11 @@ class styler(object):
 			grad_values = np.array(out[1:]).flatten().astype('float64')
 
 		return grad_values
+
+	def get_x(self):
+		if K.image_dim_ordering() == 'th':
+			x = np.random.uniform(0, 255, (1, 3, self.height, self.width)) - 128
+		else:
+			x = np.random.uniform(0, 255, (1, self.height, self.width, 3)) - 128
+		
+		return x

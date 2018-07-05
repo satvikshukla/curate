@@ -46,4 +46,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 * [Painter by numbers](https://www.kaggle.com/c/painter-by-numbers) competition for providing the data to make the models.
 * [This webpage](https://harishnarayanan.org/writing/artistic-style-transfer/) for providing help with neural style transfer
-* [This repository](https://github.com/kevinzakka/style-transfer) for acting as referene for style transfer
+* [This repository](https://github.com/kevinzakka/style-transfer) for acting as reference for style transfer
