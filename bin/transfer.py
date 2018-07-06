@@ -32,7 +32,7 @@ def build_parser():
 	return parser
 
 def main():
-	print('here')
+	print('start of main')
 	parser = build_parser()
 	options = parser.parse_args()
 
@@ -49,6 +49,7 @@ def main():
 					content_weight, style_weight, total_variation_weight, 
 					CONTENT_LAYER, STYLE_LAYERS, iterations)
 
+	print('making styler')
 	styler.style()
 
 if __name__ == '__main__':

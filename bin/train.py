@@ -32,10 +32,11 @@ def get_data(name, ls, flag=True):
 		relevant_col = ['artist', 'new_filename']
 		match_string = 'artist'
 
-	base_path = './../data/'
-	raw_data = pd.read_csv(base_path + 'all_data_info.csv', dtype=object)
+	base_path_data = './../../data/'
+	base_path_file = './../data/'
+	raw_data = pd.read_csv(base_path_file + 'all_data_info.csv', dtype=object)
 	data = pd.DataFrame(raw_data)
-	images = listdir(base_path + 'train_t')
+	images = listdir(base_path_data + 'train_t')
 
 	new_data = data[relevant_col]
 
@@ -57,7 +58,7 @@ def get_data(name, ls, flag=True):
 		if not ((new_data.loc[new_data['new_filename'] == i][match_string]).empty):
 			tmp_string = new_data.loc[new_data['new_filename'] == i][match_string].values[0]
 			if tmp_string in ls:
-				tmp_img = load_img(base_path + 'train_t/' + i, target_size=(224, 224))
+				tmp_img = load_img(base_path_data + 'train_t/' + i, target_size=(224, 224))
 				tmp_img = img_to_array(tmp_img)
 				tmp_img = np.expand_dims(tmp_img, axis=0)
 				tmp_img = preprocess_input(tmp_img)
@@ -132,11 +133,11 @@ def train_model(x_t, x_v, y_t, y_v, num_classes):
 
 	print('loss={:.4f}, accuracy: {:.4f}%'.format(loss,acc * 100))
 
-	text_file = open('./../data/results_movements.txt', 'w')
+	text_file = open('./../data/results_artists.txt', 'w')
 	text_file.write('acc %.4f' % acc)
 	text_file.close()
 
-	resnet_model.save('./../data/resnet_model_movements.h5')
+	resnet_model.save('./../data/resnet_model_artists.h5')
 
 	print('saved')
 
