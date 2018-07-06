@@ -161,17 +161,17 @@ def main():
 			self.loss_value = None
 			return grad_values
 
-		styler = Styler()
+	styler = Styler()
 
-		x = preprocess_image(base_image_path)
+	x = preprocess_image(base_image_path)
 
-		for i in range(iterations):
-			print('starting', i)
-			x, _, _ = fmin_l_bfgs_b(styler.loss, x.flatten(), fprime=styler.grads, maxfun=20)
-			img = deprocess_image(x.copy())
-			fname = 'at_itr_%d.png' % i
-			save_img(fname, img)
-			print('saved as', fname)
+	for i in range(iterations):
+		print('starting', i)
+		x, _, _ = fmin_l_bfgs_b(styler.loss, x.flatten(), fprime=styler.grads, maxfun=20)
+		img = deprocess_image(x.copy())
+		fname = 'at_itr_%d.png' % i
+		save_img(fname, img)
+		print('saved as', fname)
 
 if __name__ == '__main__':
 	main()
