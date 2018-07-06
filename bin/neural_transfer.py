@@ -62,8 +62,8 @@ def main():
 		x = np.clip(x, 0, 255).astype('uint8')
 		return x
 
-	base_image = K.variable(preprocess_image(base_image_path, dimension))
-	style_image = K.variable(preprocess_image(style_image_path, dimension))
+	base_image = K.variable(preprocess_image(base_image_path))
+	style_image = K.variable(preprocess_image(style_image_path))
 
 	if K.image_data_format() == 'channels_first':
 		combination_image = K.placeholder((1, 3, height, width))
