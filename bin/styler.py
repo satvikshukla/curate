@@ -32,7 +32,7 @@ class Styler(object):
 		self.content_img = K.variable(preprocess_image(self.base_img_path, dims))
 		self.style_img = K.variable(preprocess_image(self.style_img_path, dims))
 
-		if K.image_dim_ordering() == 'th':
+		if K.image_data_format() == 'channels_first':
 			self.output_img = K.placeholder((1, 3, dims[0], dims[1]))
 		else:
 			self.output_img = K.placeholder((1, dims[0], dims[1], 3))
@@ -64,7 +64,7 @@ class Styler(object):
 		content_loss = self.content_weight *  content_reconstruction_loss(base_image_features, combination_features)
 
 		style_loss = K.variable(0.0)
-		weight = 1.0 / float(len(self.style_layers))
+		weight = 1.0 / len(self.style_layers)
 
 		for layer in self.style_layers:
 			style_features = output_dict[layer]
@@ -88,10 +88,10 @@ class Styler(object):
 			outputs.append(grads)
 
 		self.loss_and_grads = K.function([self.output_img], outputs)
-	
+
 	def style(self):
 		print('styling...')
-		if K.image_dim_ordering() == 'th':
+		if K.image_data_format() == 'channels_first':
 			x = np.random.uniform(0, 255, (1, 3, self.height, self.width)) - 128
 		else:
 			x = np.random.uniform(0, 255, (1, self.height, self.width, 3)) - 128
@@ -104,7 +104,7 @@ class Styler(object):
 			imsave(fname, img)
 
 	def loss(self, x):
-		if K.image_dim_ordering() == 'th':
+		if K.image_data_format() == 'channels_first':
 			x = np.random.uniform(0, 255, (1, 3, self.height, self.width)) - 128
 		else:
 			x = np.random.uniform(0, 255, (1, self.height, self.width, 3)) - 128
@@ -113,7 +113,7 @@ class Styler(object):
 		return loss_val
 
 	def grads(self, x):
-		if K.image_dim_ordering() == 'th':
+		if K.image_data_format() == 'channels_first':
 			x = np.random.uniform(0, 255, (1, 3, self.height, self.width)) - 128
 		else:
 			x = np.random.uniform(0, 255, (1, self.height, self.width, 3)) - 128
@@ -127,9 +127,9 @@ class Styler(object):
 		return grad_values
 
 	def get_x(self):
-		if K.image_dim_ordering() == 'th':
+		if K.image_data_format() == 'channels_first':
 			x = np.random.uniform(0, 255, (1, 3, self.height, self.width)) - 128
 		else:
 			x = np.random.uniform(0, 255, (1, self.height, self.width, 3)) - 128
-		
+
 		return x
