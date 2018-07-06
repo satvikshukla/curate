@@ -40,7 +40,7 @@ def main():
 	width = int(w * height / h)
 	dimension = (height, width)
 
-	def preprocess_image(image_path, dimension):
+	def preprocess_image(image_path):
 		img = load_img(image_path, target_size=dimension)
 		img = img_to_array(img)
 		img = np.expand_dims(img, axis=0)
