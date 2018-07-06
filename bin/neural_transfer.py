@@ -99,7 +99,7 @@ def main():
 			a = K.square(x[:, :, :height - 1, :width - 1] - x[:, :, 1:, :width - 1])
 			b = K.square(x[:, :, :height - 1, :width - 1] - x[:, :, :height - 1, 1:])
 		else:
-			a = K.square(x[:, :height - 1, :width - 1, :] - x[:, 1:, :height - 1, :])
+			a = K.square(x[:, :height - 1, :width - 1, :] - x[:, 1:, :width - 1, :])
 			b = K.square(x[:, :height - 1, :width - 1, :] - x[:, :height - 1, 1:, :])
 		return K.sum(K.pow(a + b, 1.25))
 
