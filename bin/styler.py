@@ -86,7 +86,6 @@ class Styler(object):
 	
 	def style(self):
 		print('styling...')
-
 		if K.image_dim_ordering() == 'th':
 			x = np.random.uniform(0, 255, (1, 3, self.height, self.width)) - 128
 		else:
@@ -100,7 +99,6 @@ class Styler(object):
 			imsave(fname, img)
 
 	def loss(self, x):
-
 		if K.image_dim_ordering() == 'th':
 			x = np.random.uniform(0, 255, (1, 3, self.height, self.width)) - 128
 		else:
@@ -110,7 +108,6 @@ class Styler(object):
 		return loss_val
 
 	def grads(self, x):
-		
 		if K.image_dim_ordering() == 'th':
 			x = np.random.uniform(0, 255, (1, 3, self.height, self.width)) - 128
 		else:

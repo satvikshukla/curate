@@ -6,7 +6,7 @@ from argparse import ArgumentParser
 CONTENT_WEIGHT = 7.5e0
 STYLE_WEIGHT = 1e2
 TV_WEIGHT = 2e2
-ITERATIONS = 1
+ITERATIONS = 10
 CONTENT_LAYER = 'block5_conv2'
 STYLE_LAYERS = ['block1_conv1', 'block2_conv1', 'block3_conv1', 'block4_conv1', 'block5_conv1']
 
@@ -32,6 +32,7 @@ def build_parser():
 	return parser
 
 def main():
+	print('here')
 	parser = build_parser()
 	options = parser.parse_args()
 

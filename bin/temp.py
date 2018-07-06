@@ -283,7 +283,8 @@ for i in range(iterations):
     # save current generated image
     img = deprocess_image(x.copy())
     fname = result_prefix + '_at_iteration_%d.png' % i
-    save_img(fname, img)
+    if i % 10 == 0:
+        save_img(fname, img)
     end_time = time.time()
     print('Image saved as', fname)
     print('Iteration %d completed in %ds' % (i, end_time - start_time))
