@@ -11,15 +11,15 @@ def preprocess_image(path, dim):
     return img
 
 def deprocess_image(x, h, w):
-    if K.image_dim_ordering() == 'th':
+    if K.image_data_format() == 'channels_first':
         x = x.reshape((3, h, w))
         x = x.transpose((1, 2, 0))
     else:
         x = x.reshape((h, w, 3))
 
-    x[:, :, 0] = x[:, :, 0] - 103.939
-    x[:, :, 1] = x[:, :, 1] - 116.779
-    x[:, :, 2] = x[:, :, 2] - 123.68
+    x[:, :, 0] = x[:, :, 0] + 103.939
+    x[:, :, 1] = x[:, :, 1] + 116.779
+    x[:, :, 2] = x[:, :, 2] + 123.68
 
     x = x[:, :, ::-1]
     x = np.clip(x, 0, 255).astype('uint8')

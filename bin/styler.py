@@ -21,7 +21,7 @@ class Styler(object):
 		# w, h = load_img(self.base_img_path).size
 		# dims = (h, w)
 
-		width, height = load_img(base_image_path).size
+		width, height = load_img(base_img_path).size
 		h = 400
 		w = int(width * h / height)
 		dims = (h, w)

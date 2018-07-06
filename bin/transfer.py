@@ -3,9 +3,9 @@ from styler import Styler
 from keras import backend as K
 from argparse import ArgumentParser
 
-CONTENT_WEIGHT = 7.5e0
-STYLE_WEIGHT = 1e2
-TV_WEIGHT = 2e2
+CONTENT_WEIGHT = 0.025
+STYLE_WEIGHT = 1.0
+TV_WEIGHT = 1.0
 ITERATIONS = 10
 CONTENT_LAYER = 'block5_conv2'
 STYLE_LAYERS = ['block1_conv1', 'block2_conv1', 'block3_conv1', 'block4_conv1', 'block5_conv1']
