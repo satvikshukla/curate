@@ -169,7 +169,7 @@ def main():
 		print('starting', i)
 		x, _, _ = fmin_l_bfgs_b(styler.loss, x.flatten(), fprime=styler.grads, maxfun=20)
 		img = deprocess_image(x.copy())
-		fname = 'at_itr_%d.png' % i
+		fname = output_image_path + 'at_itr_%d.png' % i
 		save_img(fname, img)
 		print('saved as', fname)
 
