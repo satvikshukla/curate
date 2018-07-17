@@ -45,5 +45,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 ## Acknowledgments
 
 * [Painter by numbers](https://www.kaggle.com/c/painter-by-numbers) competition for providing the data to make the models.
-* [This webpage](https://harishnarayanan.org/writing/artistic-style-transfer/) for providing help with neural style transfer
-* [This repository](https://github.com/kevinzakka/style-transfer) for acting as reference for style transfer
+* [This repository](https://github.com/keras-team/keras/blob/master/examples/neural_style_transfer.py) for acting as reference for style transfer

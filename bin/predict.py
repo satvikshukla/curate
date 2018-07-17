@@ -39,23 +39,23 @@ def get_art_movement(image_path):
 		img = img_to_array(img)
 		img = np.expand_dims(img, axis=0)
 		img = preprocess_input(img)
-
-		preds = model.predict(img)
-		styles = {}
-
-		file = open('./../data/dict_movements_tmp.txt')
-		styles = eval(file.read())
-
-		index = np.argmax(preds)
-
-		for key, val in styles.items():
-			if val == index:
-				print(key, 'with precentage prediction of', np.max(preds))
-
-		return key
 	except:
 		print('\nOh! An unexpected error occured in using input file. Please try different file.')
 		return 0
+
+	preds = model.predict(img)
+	styles = {}
+
+	file = open('./../data/dict_movements.txt')
+	styles = eval(file.read())
+
+	index = np.argmax(preds)
+
+	for key, val in styles.items():
+		if val == index:
+			print(key, 'with precentage prediction of', np.max(preds))
+
+	return key
 
 def get_artist(image_path, art_movement, movements_ls, data):
 	# new_data = data.loc[data['style'] == art_movement]
@@ -69,34 +69,34 @@ def get_artist(image_path, art_movement, movements_ls, data):
 		img = img_to_array(img)
 		img = np.expand_dims(img, axis=0)
 		img = preprocess_input(img)
-
-		preds = model.predict(img)
-		preds = preds.tolist()
-		tmp_ls = []
-		artists = {}
-
-		file = open('./../data/dict_artists_tmp.txt')
-		artists = eval(file.read())
-
-		for i, val in enumerate(preds[0]):
-			tmp_ls.append((i, val))
-
-		tmp_ls.sort(key=lambda tup: tup[1], reverse=True)
-
-		for i, _ in tmp_ls:
-			for j, val_two in artists.items():
-				# if i == val_two and j in possible_artists:
-				if i == val_two:
-					print('Most probable artist is', j)
-					# result = sub('[\(\[].*?[\)\]]', '', summary(j)).strip()
-					result = summary(j)
-					print(result)
-					return 1
-
-		return 0
 	except:
 		print('\nOh! An unexpected error occured in using input file. Please try different file.')
 		return 0
+
+	preds = model.predict(img)
+	preds = preds.tolist()
+	tmp_ls = []
+	artists = {}
+
+	file = open('./../data/dict_artists.txt')
+	artists = eval(file.read())
+
+	for i, val in enumerate(preds[0]):
+		tmp_ls.append((i, val))
+
+	tmp_ls.sort(key=lambda tup: tup[1], reverse=True)
+
+	for i, _ in tmp_ls:
+		for j, val_two in artists.items():
+			# if i == val_two and j in possible_artists:
+			if i == val_two:
+				print('Most probable artist is', j)
+				# result = sub('[\(\[].*?[\)\]]', '', summary(j)).strip()
+				result = summary(j)
+				print(result)
+				return 1
+
+	return 0
 
 def go_on():
 	start_over = input('\nEnter yes if you want to test more images: ')
