@@ -1,58 +1,46 @@
-﻿Henrique Pousao
-Nicolae Grigorescu
-John Roddam Spencer Stanhope
-Alfredo Volpi
-Vanessa Bell
-Leon Bakst
-Bernardo Strozzi
-Josef Sima
-Albert Trachsel
-Allan Ramsay
-Lucas Cranach the Elder
-Walter Battiss
-Anne Ryan
-Vladimir Borovikovsky
-Amadeo de Souza-Cardoso
-Paul Jacoulet
-Pisanello
-Parmigianino
-Alighiero Boetti
-Clarence Holbrook Carter
-Brett Whiteley
-Tihamer Gyarmathy
-Jose Ferraz de Almeida Junior
-Dan Christensen
-Andy Warhol
-Rik Wouters
-Jean Degottex
-Erte
-Cesar Domela
-Edwin Dickinson
-Xu Beihong
-Dieter Roth
-Marevna (Marie Vorobieff)
-Sol LeWitt
-Charles Lapicque
-Richard Friese
-Martin Kippenberger
-Jean-Leon Gerome
 Albert Bierstadt
-Ito Shinsui
-Thomas Downing
-Kaoru Kawano
-Vanessa Bell
-Edward Hopper
-Grant Wood
-charley toorop
-Jacob Lawrence
-Félix Del Marle
-Joseph Stella
-Robert Henri
-Giotto
-Carl Buchheister
-Sonia Delaunay
-Jacques Stella
-Jusepe de Ribera
-Pisanello
-Enrico Prampolini
-George Inness
+Albrecht Durer
+Alfred Sisley
+Amedeo Modigliani
+Boris Kustodiev
+Camille Corot
+Camille Pissarro
+Childe Hassam
+David Burliuk
+Ernst Ludwig Kirchner
+Erte
+Eugene Boudin
+Eyvind Earle
+Felix Vallotton 
+Fernand Leger
+Francisco Goya
+Giovanni Battista Piranesi
+Gustave Dore
+Henri Martin
+Henri de Toulouse-Lautrec
+Ilya Repin
+Isaac Levitan
+Ivan Aivazovsky
+Ivan Shishkin
+James Tissot
+John Singer Sargent
+Konstantin Korovin
+Konstantin Makovsky
+M.C. Escher
+Marc Chagall
+Martiros Saryan
+Mary Cassatt
+Maurice Prendergast
+Max Ernst
+Nicholas Roerich
+Odilon Redon
+Pierre-Auguste Renoir
+Pyotr Konchalovsky
+Raphael Kirchner
+Sam Francis
+Theodor Severin Kittelsen
+Theophile Steinlen
+Utagawa Kuniyoshi
+William Merritt Chase
+Zdislav Beksinski
+Zinaida Serebriakova

@@ -32,11 +32,12 @@ def get_data(name, ls, flag=True):
 		relevant_col = ['artist', 'new_filename']
 		match_string = 'artist'
 
-	base_path_data = './../../data/'
+	base_path_data = './../'
 	base_path_file = './../data/'
 	raw_data = pd.read_csv(base_path_file + 'all_data_info.csv', dtype=object)
 	data = pd.DataFrame(raw_data)
-	images = listdir(base_path_data + 'train_t')
+	images = listdir(base_path_data + 'train/')
+	# print(images)
 
 	new_data = data[relevant_col]
 
@@ -55,10 +56,12 @@ def get_data(name, ls, flag=True):
 		ref_dict = eval(file_to_get.read())
 
 	for i in images:
+		print(i)
 		if not ((new_data.loc[new_data['new_filename'] == i][match_string]).empty):
 			tmp_string = new_data.loc[new_data['new_filename'] == i][match_string].values[0]
+			print(tmp_string)
 			if tmp_string in ls:
-				tmp_img = load_img(base_path_data + 'train_t/' + i, target_size=(224, 224))
+				tmp_img = load_img(base_path_data + 'train/' + i, target_size=(224, 224))
 				tmp_img = img_to_array(tmp_img)
 				tmp_img = np.expand_dims(tmp_img, axis=0)
 				tmp_img = preprocess_input(tmp_img)
@@ -72,10 +75,10 @@ def get_data(name, ls, flag=True):
 
 	print(ref_dict)
 
-	string_to_write = './../data/dict_' + name + '.txt'
-	file_to_write = open(string_to_write, 'w')
-	file_to_write.write(str(ref_dict))
-	file_to_write.close()
+	#string_to_write = './../data/dict_' + name + '.txt'
+	#file_to_write = open(string_to_write, 'w')
+	#file_to_write.write(str(ref_dict))
+	#file_to_write.close()
 
 	del new_data
 
@@ -127,17 +130,17 @@ def train_model(x_t, x_v, y_t, y_v, num_classes):
 	datagen.fit(x_t)
 
 	t = time()
-	resnet_model.fit_generator(datagen.flow(x_t, y_t, batch_size=32), steps_per_epoch=100, epochs=100)
+	resnet_model.fit_generator(datagen.flow(x_t, y_t, batch_size=1), steps_per_epoch=100, epochs=100)
 	print('training time %s' % (t- time()))
 	(loss, acc) = resnet_model.evaluate(x_v, y_v, batch_size=10, verbose=1)
 
 	print('loss={:.4f}, accuracy: {:.4f}%'.format(loss,acc * 100))
 
-	text_file = open('./../data/results_artists.txt', 'w')
+	text_file = open('./../data/results_mov.txt', 'w')
 	text_file.write('acc %.4f' % acc)
 	text_file.close()
 
-	resnet_model.save('./../data/resnet_model_artists.h5')
+	resnet_model.save('./../data/resnet_model_mov.h5')
 
 	print('saved')
 
