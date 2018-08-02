@@ -16,7 +16,7 @@ def main():
 						help='path to style image.')
 	parser.add_argument('output_img_path', metavar='output', type=str,
 						help='path to output directory.')
-	parser.add_argument('--iter', type=int, default=1,
+	parser.add_argument('--iter', type=int, default=30,
 						metavar='iterations', help='Number of iterations.')
 	parser.add_argument('--content_weight', type=float, default=0.5,
 						help='Weight for content feature loss')
@@ -36,7 +36,7 @@ def main():
 	content_weight = args.content_weight
 
 	w, h = load_img(base_image_path).size
-	height = 400
+	height = 600
 	width = int(w * height / h)
 	dimension = (height, width)
 
@@ -169,10 +169,10 @@ def main():
 		print('starting', i)
 		x, _, _ = fmin_l_bfgs_b(styler.loss, x.flatten(), fprime=styler.grads, maxfun=20)
 		img = deprocess_image(x.copy())
-		if i == iterations - 1:
-			fname = output_image_path + 'at_itr_%d.png' % i
-			save_img(fname, img)
-			print('saved as', fname)
+		#if ((i+ 1) % 10) == 0:
+		fname = output_image_path + 'firstat_itr_%d.png' % i
+		save_img(fname, img)
+		print('saved as', fname)
 
 if __name__ == '__main__':
 	main()
